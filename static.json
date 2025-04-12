@@ -1,5 +1,6 @@
 {
   "routes": {
+    "/whatsapp-lead-dialog.html": "whatsapp-lead-dialog.html",
     "/**": "index.html"
   }
 }
