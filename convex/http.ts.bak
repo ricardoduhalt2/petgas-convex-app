@@ -1,0 +1,59 @@
+import { httpRouter } from "convex/server";
+import { httpAction } from "./_generated/server";
+import { internal } from "./_generated/api";
+
+const http = httpRouter();
+
+// Endpoint para obtener posts de WordPress
+http.route({
+  path: "/fetch-wordpress-leads",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const wpUrl = "https://www.petgas.com.mx/wp-json/wp/v2/posts";
+    const res = await fetch(wpUrl);
+    if (!res.ok) {
+      return new Response("Failed to fetch from WordPress", { status: 500 });
+    }
+    const posts = await res.json();
+    return new Response(JSON.stringify(posts), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+  })
+});
+
+// Endpoint para importar leads
+http.route({
+  path: "/import-lead",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const body = await request.json();
+    await ctx.runMutation(internal.leads.create, body);
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+  })
+});
+
+// Handler para CORS pre-flight
+http.route({
+  path: "/import-lead",
+  method: "OPTIONS",
+  handler: httpAction(async () => {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "86400"
+      }
+    });
+  })
+});
+
+export default http;
