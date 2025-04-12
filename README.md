@@ -50,6 +50,8 @@ Plataforma para captación, segmentación y optimización de leads para reciclaj
 - [x] Tipado seguro para operaciones
 
 ### Pendiente / Siguiente pasos
+- [ ] Integrar el componente WhatsAppLeadDialog en la página web petgas.com.mx
+- [ ] Probar el bot de WhatsApp para asegurar la correcta captura e importación de datos
 - [ ] Automatizar ejecución periódica de scripts.
 - [ ] Mejorar parsing de roles y metadatos de usuarios de WordPress.
 - [ ] Enriquecer parsing de correos para leads (extraer teléfono, nombre, etc.).
@@ -57,7 +59,6 @@ Plataforma para captación, segmentación y optimización de leads para reciclaj
 - [ ] Integrar otras fuentes (WhatsApp, redes sociales).
 - [ ] Mejorar UI para visualizar leads importados.
 - [ ] Documentar endpoints y scripts para onboarding de nuevos agentes.
-- [x] App desplegada en Render.com: [https://petgas-convex-app.onrender.com/](https://petgas-convex-app.onrender.com/)
 - [ ] Probar importación masiva de usuarios
 - [ ] Desarrollar lógica de IA para analizar el cuerpo de los correos y categorizar leads automáticamente según intención, urgencia y valor potencial.
 - [ ] Automatizar respuestas y documentación según categoría de lead.

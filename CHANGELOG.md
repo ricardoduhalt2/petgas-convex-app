@@ -4,7 +4,11 @@
 ### Added
 - Componente `WhatsAppLeadDialog.tsx`: diálogo tipo chatbot que capta información del usuario antes de abrir WhatsApp y la envía a Convex como lead con source `whatsapp_web`.
 - El historial del diálogo se almacena en `metadata.dialog` y el mensaje final en `metadata.body`, integrando WhatsApp al embudo de leads y permitiendo lógica de IA sobre la conversación.
-- Checklist actualizado: WhatsApp web ahora es un canal de entrada inteligente y trazable.
+- El componente WhatsAppLeadDialog está listo para ser integrado en petgas.com.mx
+
+### Pendiente
+- Integrar el componente WhatsAppLeadDialog en la página web petgas.com.mx
+- Probar el bot de WhatsApp para asegurar la correcta captura e importación de datos
 
 ## [1.7.0] - 2025-11-04
 ### Added
