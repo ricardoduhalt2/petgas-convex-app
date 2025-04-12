@@ -21,6 +21,12 @@ export function Navbar({ current, onNavigate }: NavbarProps) {
         >
           Nuevo Lead
         </button>
+         <button
+          className={`nav-btn${current === "whatsapp" ? " active" : ""}`}
+          onClick={() => onNavigate("whatsapp")}
+        >
+          WhatsApp
+        </button>
         <img
           src="https://petgas.com.do/wp-content/uploads/2025/03/cropped-cropped-favi.png"
           alt="PETGAS Logo"

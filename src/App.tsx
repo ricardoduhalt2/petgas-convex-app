@@ -3,9 +3,10 @@ import { SignInForm } from "./SignInForm";
 import { NewLeadForm } from "./components/NewLeadForm";
 import { LeadsDashboard } from "./components/LeadsDashboard";
 import { Navbar } from "./components/Navbar";
+import WhatsAppLeadDialog from "./components/WhatsAppLeadDialog"; // Import the component
 
 export default function App() {
-  const [view, setView] = useState<"dashboard" | "newlead">("dashboard");
+  const [view, setView] = useState<"dashboard" | "newlead" | "whatsapp">("dashboard"); // Add "whatsapp" to the view options
   const [loggedIn, setLoggedIn] = useState(false);
 
   // Simple login state: show login form if not logged in
@@ -36,6 +37,7 @@ export default function App() {
       <div className="p-8">
         {view === "dashboard" && <LeadsDashboard />}
         {view === "newlead" && <NewLeadForm />}
+        {view === "whatsapp" && <WhatsAppLeadDialog />} {/* Render the component */}
       </div>
     </div>
   );
