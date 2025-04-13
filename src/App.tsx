@@ -4,6 +4,7 @@ import { NewLeadForm } from "./components/NewLeadForm";
 import { LeadsDashboard } from "./components/LeadsDashboard";
 import { Navbar } from "./components/Navbar";
 import WhatsAppLeadDialog from "./components/WhatsAppLeadDialog";
+import WhatsAppChatWidget from "./components/WhatsAppChatWidget";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App() {
@@ -28,6 +29,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <WhatsAppChatWidget />
       <Routes>
         <Route path="/whatsapp-lead-dialog" element={<WhatsAppLeadDialog />} />
         <Route

@@ -17,7 +17,7 @@ export function LeadsDashboard() {
     async function fetchLeads() {
       const { data, error } = await supabase
         .from("petgas_leads")
-        .select("*, metadata")
+        .select("*")
         .order("created_at", { ascending: false })
         .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
       const hasNextPage = (data?.length || 0) > PAGE_SIZE;
@@ -126,10 +126,7 @@ export function LeadsDashboard() {
         <p style={{ fontSize: 18, color: "#222b2e", marginBottom: 32 }}>
           Este dashboard muestra los leads captados desde distintas fuentes y categorizados en diferentes embudos.
         </p>
-        {/* Botones de importación */}
-        <ImportButtons />
       </div>
-      {/* Filtros y búsqueda */}
       <div style={{ display: "flex", gap: 24, marginBottom: 18, alignItems: "center", maxWidth: 1000, marginLeft: "auto", marginRight: "auto" }}>
         <input
           type="text"
@@ -190,13 +187,11 @@ export function LeadsDashboard() {
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th style={{ fontWeight: 700, color: "#222", width: "22%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Nombre</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "28%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Email</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "18%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Origen</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "14%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Categoría</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "14%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Interés</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "20%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Mensaje</th>
-              <th style={{ fontWeight: 700, color: "#222", width: "10%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Fecha</th>
+              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "22%", textAlign: "left", padding: "18px 24px" }}>Nombre</th>
+              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "28%", textAlign: "left", padding: "18px 24px" }}>Email</th>
+              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "18%", textAlign: "left", padding: "18px 24px" }}>Origen</th>
+              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "18%", textAlign: "left", padding: "18px 24px" }}>Categoría</th>
+              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "14%", textAlign: "left", padding: "18px 24px" }}>Fecha</th>
             </tr>
           </thead>
           <tbody>
@@ -207,7 +202,7 @@ export function LeadsDashboard() {
                 const name = lead.name
                   ? lead.name.replace(/["<>]/g, "").replace(email, "").replace(/ *$/, "")
                   : "";
-                const searchText = (name + " " + email + " " + lead.source + " " + lead.category + " " + (lead.metadata?.interest || "") + " " + (lead.metadata?.body || "")).toLowerCase();
+                const searchText = (name + " " + email + " " + lead.source + " " + lead.category).toLowerCase();
                 return (
                   (!search || searchText.includes(search.toLowerCase())) &&
                   (!filterCategory || (lead.category || "").toLowerCase() === filterCategory.toLowerCase()) &&
@@ -249,8 +244,6 @@ export function LeadsDashboard() {
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{email}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.source}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.category}</td>
-                    <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.metadata?.interest || "-"}</td>
-                    <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.metadata?.body || "-"}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : "-"}</td>
                   </tr>
                 );
@@ -271,154 +264,6 @@ export function LeadsDashboard() {
           onStatusChange={handleStatusChange}
           onAgentChange={handleAgentChange}
         />
-      )}
-    </div>
-  );
-}
-
-/** Botones para importar leads de email, MySQL y WhatsApp */
-function ImportButtons() {
-  const [loading, setLoading] = useState<"email" | "wp" | "wa" | null>(null);
-  const [result, setResult] = useState<string | null>(null);
-
-  async function handleImport(type: "email" | "wp" | "wa") {
-    setLoading(type);
-    setResult(null);
-    try {
-      let endpoint = "";
-      if (type === "email") endpoint = "http://localhost:4000/import-email-leads";
-      else if (type === "wp") endpoint = "http://localhost:4000/import-wp-leads";
-      else if (type === "wa") {
-        setResult("Importación de WhatsApp aún no implementada.");
-        setLoading(null);
-        return;
-      }
-      const res = await fetch(endpoint, { method: "POST" });
-      const data = await res.json();
-      if (data.success) {
-        setResult(
-          `Importación de ${type === "email" ? "email" : type === "wp" ? "MySQL" : "WhatsApp"} completada:\n` +
-            (data.output || "")
-        );
-      } else {
-        setResult(
-          `Error al importar ${type === "email" ? "email" : type === "wp" ? "MySQL" : "WhatsApp"}:\n` +
-            (data.error || data.stderr || "")
-        );
-      }
-    } catch (err: any) {
-      setResult("Error de red: " + err.message);
-    }
-    setLoading(null);
-  }
-
-  // Iconos SVG
-  const iconEmail = (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ marginRight: 6, verticalAlign: "middle" }}>
-      <rect width="20" height="20" rx="5" fill="#fff" />
-      <path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h9A2.5 2.5 0 0 1 17 5.5v9A2.5 2.5 0 0 1 14.5 17h-9A2.5 2.5 0 0 1 3 14.5v-9Zm2.06.44a.75.75 0 0 0-.12 1.05l4.44 5.5a.75.75 0 0 0 1.14 0l4.44-5.5a.75.75 0 1 0-1.16-.93L10 10.07 6.22 6.06a.75.75 0 0 0-1.06-.12Z" fill="#00b140"/>
-    </svg>
-  );
-  const iconDB = (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ marginRight: 6, verticalAlign: "middle" }}>
-      <ellipse cx="10" cy="5" rx="7" ry="3" fill="#fff"/>
-      <ellipse cx="10" cy="5" rx="7" ry="3" stroke="#009fe3" strokeWidth="1.5"/>
-      <rect x="3" y="5" width="14" height="8" rx="3" fill="#fff"/>
-      <rect x="3" y="5" width="14" height="8" rx="3" stroke="#009fe3" strokeWidth="1.5"/>
-      <ellipse cx="10" cy="13" rx="7" ry="3" fill="#fff"/>
-      <ellipse cx="10" cy="13" rx="7" ry="3" stroke="#009fe3" strokeWidth="1.5"/>
-    </svg>
-  );
-  const iconWA = (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style={{ marginRight: 6, verticalAlign: "middle" }}>
-      <circle cx="10" cy="10" r="10" fill="#25D366"/>
-      <path d="M15.2 13.6c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.6.7-.7.8-.1.1-.3.2-.5.1-.2-.1-.8-.3-1.5-1-.6-.6-1-1.3-1.1-1.5-.1-.2 0-.3.1-.5.1-.1.2-.3.3-.4.1-.1.1-.2.2-.3.1-.1.1-.2 0-.4-.1-.2-.5-1.2-.7-1.6-.2-.4-.4-.3-.5-.3h-.4c-.1 0-.3 0-.4.2-.1.2-.5.5-.5 1.2 0 .7.5 1.4.6 1.5.1.1 1.1 1.7 2.7 2.3.4.2.7.3 1 .4.4.1.7.1 1 .1.3 0 .6 0 .8-.1.2-.1.6-.2.7-.5.1-.3.1-.5.1-.5 0-.1-.1-.1-.2-.2z" fill="#fff"/>
-    </svg>
-  );
-
-  return (
-    <div style={{ marginBottom: 18, display: "flex", gap: 10 }}>
-      <button
-        onClick={() => handleImport("email")}
-        disabled={!!loading}
-        style={{
-          padding: "6px 12px",
-          borderRadius: 10,
-          background: "#00b140",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 14,
-          border: "1.5px solid #00b140",
-          boxShadow: "0 1px 4px 0 rgba(0,177,64,0.08)",
-          cursor: loading ? "not-allowed" : "pointer",
-          opacity: loading ? 0.7 : 1,
-          display: "flex",
-          alignItems: "center",
-        }}
-        title="Importar leads de Email"
-      >
-        {iconEmail}
-        {loading === "email" ? "Importando..." : "Email"}
-      </button>
-      <button
-        onClick={() => handleImport("wp")}
-        disabled={!!loading}
-        style={{
-          padding: "6px 12px",
-          borderRadius: 10,
-          background: "#009fe3",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 14,
-          border: "1.5px solid #009fe3",
-          boxShadow: "0 1px 4px 0 rgba(0,159,227,0.08)",
-          cursor: loading ? "not-allowed" : "pointer",
-          opacity: loading ? 0.7 : 1,
-          display: "flex",
-          alignItems: "center",
-        }}
-        title="Importar leads de MySQL"
-      >
-        {iconDB}
-        {loading === "wp" ? "Importando..." : "MySQL"}
-      </button>
-      <button
-        onClick={() => handleImport("wa")}
-        disabled
-        style={{
-          padding: "6px 12px",
-          borderRadius: 10,
-          background: "#25D366",
-          color: "#fff",
-          fontWeight: 700,
-          fontSize: 14,
-          border: "1.5px solid #25D366",
-          boxShadow: "0 1px 4px 0 rgba(37,211,102,0.08)",
-          opacity: 0.5,
-          display: "flex",
-          alignItems: "center",
-          cursor: "not-allowed",
-        }}
-        title="Importación de WhatsApp próximamente"
-      >
-        {iconWA}
-        WhatsApp
-      </button>
-      {result && (
-        <pre
-          style={{
-            background: "#f5f7fa",
-            color: "#222b2e",
-            borderRadius: 10,
-            padding: 10,
-            marginLeft: 10,
-            maxWidth: 400,
-            whiteSpace: "pre-wrap",
-            fontSize: 13,
-          }}
-        >
-          {result}
-        </pre>
       )}
     </div>
   );

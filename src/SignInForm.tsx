@@ -1,92 +1,123 @@
-import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../convex/_generated/api";
+import React, { useState } from "react";
+import { supabase } from "./lib/supabaseClient";
 
-export function SignInForm() {
-  const [username, setUsername] = useState("");
+export function SignInForm({ onSignIn }: { onSignIn?: () => void }) {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [registerMode, setRegisterMode] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const signIn = useMutation(api.auth.signIn);
-  const signUp = useMutation(api.auth.signUp);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError(null);
-    try {
-      if (registerMode) {
-        const res = await signUp({ username, password });
-        setUserId(res.userId);
-        setRegisterMode(false);
-      } else {
-        const res = await signIn({ username, password });
-        setUserId(res.userId);
-      }
-      setUsername("");
-      setPassword("");
-    } catch (err: any) {
-      setError(err?.message || "Error");
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      setError(error.message);
+    } else if (onSignIn) {
+      onSignIn();
     }
   };
 
-  if (userId) {
-    return (
-      <div className="space-y-6 animate-text-slide">
-        <div className="text-green-700 font-bold">Bienvenido, sesión iniciada.</div>
-        <div className="text-xs text-gray-500">User ID: {userId}</div>
-        <button
-          className="auth-button bg-gray-400 hover:bg-gray-500 text-white"
-          onClick={() => setUserId(null)}
-        >
-          Cerrar sesión
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6 animate-text-slide">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-            Usuario
-          </label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            className="auth-input"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-            Contraseña
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="auth-input"
-            required
-          />
-        </div>
-        <button type="submit" className="auth-button">
-          {registerMode ? "Registrarse" : "Iniciar sesión"}
-        </button>
+    <div
+      className="petgas-panel petgas-animate-pop"
+      style={{
+        maxWidth: 420,
+        margin: "64px auto",
+        background: "#fff",
+        boxShadow: "0 8px 32px 0 rgba(0,177,64,0.13)",
+        borderRadius: 24,
+        padding: 36,
+        textAlign: "center"
+      }}
+    >
+      <img
+        src="https://petgas.com.do/wp-content/uploads/2025/03/cropped-cropped-favi.png"
+        alt="PETGAS Logo"
+        style={{
+          width: 72,
+          height: 72,
+          borderRadius: "50%",
+          marginBottom: 18,
+          boxShadow: "0 2px 16px 0 rgba(0,177,64,0.12)",
+          background: "#fff"
+        }}
+      />
+      <h2 style={{
+        fontWeight: 900,
+        fontSize: 28,
+        color: "#00b140",
+        marginBottom: 8,
+        letterSpacing: "0.01em"
+      }}>
+        Iniciar sesión en PETGAS
+      </h2>
+      <p style={{ color: "#222b2e", marginBottom: 24 }}>
+        Accede a la plataforma inteligente de leads PETGAS
+      </p>
+      <form onSubmit={handleSignIn}>
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          style={{
+            width: "100%",
+            padding: "14px 16px",
+            borderRadius: 12,
+            border: "1.5px solid #00b140",
+            background: "#f5f7fa",
+            color: "#222b2e",
+            fontSize: 16,
+            marginBottom: 18,
+            outline: "none"
+          }}
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          style={{
+            width: "100%",
+            padding: "14px 16px",
+            borderRadius: 12,
+            border: "1.5px solid #00b140",
+            background: "#f5f7fa",
+            color: "#222b2e",
+            fontSize: 16,
+            marginBottom: 18,
+            outline: "none"
+          }}
+        />
         <button
-          type="button"
-          className="auth-button bg-blue-600 hover:bg-blue-700 text-white mt-2"
-          onClick={() => setRegisterMode(m => !m)}
+          type="submit"
+          className="petgas-btn"
+          style={{
+            width: "100%",
+            padding: "14px 0",
+            fontSize: 18,
+            borderRadius: 16,
+            marginTop: 4,
+            marginBottom: 8
+          }}
+          disabled={loading}
         >
-          {registerMode ? "¿Ya tienes cuenta? Inicia sesión" : "Crear cuenta nueva"}
+          {loading ? "Accediendo..." : "Iniciar sesión"}
         </button>
-        {error && <div className="text-red-600 font-bold">{error}</div>}
+        {error && (
+          <div style={{ color: "#e11d48", fontWeight: 700, marginTop: 10 }}>
+            {error}
+          </div>
+        )}
       </form>
+      <div style={{ marginTop: 18, color: "#009fe3", fontWeight: 700 }}>
+        <span style={{ color: "#00b140" }}>petgas.com.mx</span>
+      </div>
     </div>
   );
 }

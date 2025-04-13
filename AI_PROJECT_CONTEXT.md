@@ -1,70 +1,26 @@
-# AI Project Context — PETGAS Ecosystem Manager
-
-## Resumen técnico y de decisiones para agentes AI
-
-### Estructura y objetivo
-- CRM para leads de reciclaje/planta de pirólisis.
-- Stack: React, Convex (backend serverless y base de datos), TailwindCSS.
-- Leads pueden venir de WordPress, WhatsApp, redes sociales, emails, o manualmente.
-- Integración con WordPress: extracción de usuarios desde MySQL.
-- Integración con correo: extracción de leads desde IMAP.
-
 ---
 
-## Cambios y scripts realizados
+## Log de migración a Supabase (2025-12-04, actualizado 2025-04-13)
 
-### Extracción de usuarios de WordPress
-- Script: `extract_wp_users.js`
-  - Conecta a MySQL remoto, extrae usuarios de `wp_users` y metadatos, exporta a `wp_users_export.json`.
+- Migración completa de la base de datos y backend de Convex a Supabase.
+- Refactorización de todos los scripts de importación para usar la API de Supabase.
+- Extracción y carga de leads y usuarios desde WordPress/MySQL y correo IMAP a Supabase.
+- Limpieza automática de HTML, imágenes y caracteres extraños en los mensajes antes de importarlos.
+- Importación incremental: si un lead ya existe (mismo email), los nuevos mensajes se agregan al historial (metadata.messages) en vez de crear duplicados.
+- Panel de dashboard y tabla de leads alineados, con encabezados y columnas perfectamente coincidentes.
+- Filtros y buscador funcionales en el dashboard.
+- Panel de detalle de lead con área de metadata expandida y sección de notas/seguimiento editable.
+- UI lista para persistencia de notas y cambios de estado/agente en Supabase.
+- Copia de seguridad de la versión funcional guardada en `src/components/LeadsDashboard.bak.tsx`.
+- Eliminación de dependencias y lógica de Convex en el frontend.
+- Branding PETGAS aplicado en login, navbar, dashboard y paneles.
+- Chatbot de WhatsApp funcional: registra leads en Supabase, evita duplicados y acumula mensajes.
+- Botones de importación de leads de Email y MySQL en el dashboard, conectados a endpoints Express.
+- Todos los cambios documentados en README y logs/petgas_migracion_supabase.log.
 
-### Importación de usuarios a Convex
-- Script: `import_users_to_convex.js`
-  - Lee `wp_users_export.json` y usa la mutation `leads:create` para insertar cada usuario como lead en Convex.
+### Instrucciones rápidas
 
-### Extracción de leads desde correo electrónico
-- Script: `extract_email_leads.js`
-  - Conecta vía IMAP, extrae remitente, asunto, fecha y cuerpo, exporta a `email_leads_export.json`.
-
-### Importación de leads de correo a Convex
-- Script: `import_email_leads_to_convex.js`
-  - Lee `email_leads_export.json` y usa la mutation `leads:create` para insertar cada lead en Convex.
-
----
-
-## Checklist técnico y de integración
-
-### Completado
-- [x] Extracción de usuarios de WordPress vía MySQL remoto.
-- [x] Importación de usuarios de WordPress a Convex.
-- [x] Extracción de leads desde correo IMAP.
-- [x] Importación de leads de correo a Convex.
-- [x] Instalación y uso del CLI de Convex localmente.
-
-### Pendiente / Siguiente pasos
-- [ ] Automatizar ejecución periódica de scripts (cron o similar).
-- [ ] Mejorar parsing de roles y metadatos de usuarios de WordPress.
-- [ ] Enriquecer parsing de correos para leads (extraer teléfono, nombre, etc.).
-- [ ] Unificar lógica de deduplicación de leads.
-- [ ] Integrar otras fuentes (WhatsApp, redes sociales).
-- [ ] Mejorar UI para visualizar leads importados.
-- [ ] Documentar endpoints y scripts para onboarding de nuevos agentes AI/humanos.
-
----
-
-## Decisiones y contexto relevante
-
-- El deployment Convex activo es: `frugal-pony-197`
-- Deploy key: `dev:frugal-pony-197|eyJ2MiI6IjEwMWFlYzhiYzVhYjQ1MTE4Y2U5MmY3YzM0N2QyOTc0In0=`
-- Mutations principales: `leads:create`, `importFromWordpress`
-- Scripts clave: `extract_wp_users.js`, `import_users_to_convex.js`, `extract_email_leads.js`, `import_email_leads_to_convex.js`
-- Correo IMAP: `enlace@petgas.com.mx` (host: mail.petgas.com.mx, puerto: 993, SSL)
-- MySQL remoto: host `p3plzcpnl489472.prod.phx3.secureserver.net`, usuario `ricardoduhalt`, base `i9280431_wp2`
-
----
-
-## Cómo continuar (para agentes AI/humanos)
-
-1. Leer este archivo para entender el estado y los scripts disponibles.
-2. Revisar y actualizar scripts según nuevas fuentes o cambios de estructura.
-3. Usar el CLI de Convex para administrar funciones y datos.
-4. Mantener este archivo actualizado tras cada cambio relevante.
+- Para importar leads de email o MySQL, usa los botones en el dashboard o ejecuta los scripts manualmente.
+- El chatbot de WhatsApp registra leads en Supabase y acumula mensajes por email.
+- Todos los mensajes se limpian automáticamente antes de guardarse.
+- El dashboard muestra los leads y su historial de mensajes.

@@ -1,0 +1,142 @@
+[
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Apreciado(a) {client_name}.\n\nEsta es la confirmación de la cita para {service_name}.\n\nTe estaremos esperando en {company_address} el {appointment_date} a las {appointment_time} .\n\nGracias por confiar en nosotros.\n\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca cita aprobado"
+  },
+  {
+    "name": "{clie",
+    "email": null,
+    "phone": "{clie",
+    "message": "Hola.\n\nTienes una nueva cita.\n\nServicio: {service_name}\nFecha: {appointment_date}\nHora: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nEmail del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca cita aprobado"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\n\nHa cancelado su reserva de {service_name} el {appointment_date} a las {appointment_time}.\n\nGracias por escoger nuestra compañia.\n\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca cita cancelada"
+  },
+  {
+    "name": "{clie",
+    "email": "{clie",
+    "phone": "{clie",
+    "message": "Hola.\n\nLa siguiente reserva ha sido cancelada.\n\nServicio: {service_name}\nFecha: {appointment_date}\nHora: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nCorreo electrónico del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca cita cancelada"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado {client_name}.\n\nSe ha rechazado su reserva de {service_name} el {appointment_date} en {appointment_time}.\n\nRazón: {cancellation_reason}\n\nGracias por escoger nuestra compañia.\n\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca de la designación rechazada"
+  },
+  {
+    "name": "{clie",
+    "email": "{clie",
+    "phone": "{clie",
+    "message": "Hola.\n\nLa siguiente reserva ha sido rechazada.\n\nRazón: {cancellation_reason}\n\nServicio: {service_name}\nFecha: {appointment_date}\nTiempo: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nCorreo electrónico del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca de la designación rechazada"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\nEsto es la confirmación de la reserva de {service_name}.\nLe esperamos en {company_address} el {appointment_date} a las {appointment_time}.\nGracias por escoger nuestra compañia.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca cita aprobado"
+  },
+  {
+    "name": "{clie",
+    "email": "{clie",
+    "phone": "{clie",
+    "message": "Hola.\nTiene una nueva reserva.\nServicio: {service_name}\nFecha: {appointment_date}\nHora: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nCorreo electrónico del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca cita aprobado"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\nHa cancelado su reserva de {service_name} el {appointment_date} a las {appointment_time}.\nGracias por escoger nuestra compañia.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca cita cancelada"
+  },
+  {
+    "name": "{clie",
+    "email": "{clie",
+    "phone": "{clie",
+    "message": "Hola.\nLa siguiente reserva ha sido cancelada.\nServicio: {service_name}\nFecha: {appointment_date}\nHora: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nCorreo electrónico del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca cita cancelada"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado {client_name}.\nSe ha rechazado su reserva de {service_name} el {appointment_date} en {appointment_time}.\nRazón: {cancellation_reason}\nGracias por escoger nuestra compañia.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Notificación a los clientes acerca de la designación rechazada"
+  },
+  {
+    "name": "{clie",
+    "email": "{clie",
+    "phone": "{clie",
+    "message": "Hola.\nLa siguiente reserva ha sido rechazada.\nRazón: {cancellation_reason}\nServicio: {service_name}\nFecha: {appointment_date}\nTiempo: {appointment_time}\nNombre del cliente: {client_name}\nTeléfono del cliente: {client_phone}\nCorreo electrónico del cliente: {client_email}",
+    "notification_name": "Notificación a un miembro del personal acerca de la designación rechazada"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\nNos gustaría recordarle que tiene una reserva de {service_name} mañana a las {appointment_time}. Le esperamos en {company_address}.\nGracias por escoger nuestra compañia.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Recordatorio vespertino al cliente sobre cita del día siguiente (requiere configuración cron)"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\nNos gustaría recordarle que tiene una reserva de {service_name} mañana a las {appointment_time}. Le esperamos en {company_address}.\nGracias por escoger nuestra compañia.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Recordatorio vespertino al cliente sobre cita del día siguiente (requiere configuración cron)"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Estimado/a {client_name}.\nGracias por escoger {company_name}. Esperamos que esté satisfecho con su {service_name}.\nGracias y esperamos volver a verle pronto.\n{company_name}\n{company_phone}\n{company_website}",
+    "notification_name": "Seguimiento de mensaje al día siguiente de la cita (requiere configuración cron)"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Hola.\nSu agenda para mañana es:\n{next_day_agenda}",
+    "notification_name": "Notificación vespertina al Personal con la agenda del día siguiente (requiere configuración cron)"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "{verification_code}",
+    "notification_name": "Notificación al cliente con código de verificación"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "{verification_code}",
+    "notification_name": "Notificación al cliente con código de verificación"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Hola.\nSu token de acceso para la aplicación móvil del Gabinete de Personal de Bookly: {access_token}",
+    "notification_name": "Detalles del token de acceso a la aplicación móvil del Gabinete de Personal de Bookly del nuevo miembro del personal"
+  },
+  {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "message": "Hola.\nSu token de acceso para la aplicación móvil del Gabinete de Personal de Bookly: {access_token}",
+    "notification_name": "Detalles del token de acceso a la aplicación móvil del Gabinete de Personal de Bookly del nuevo miembro del personal"
+  }
+]

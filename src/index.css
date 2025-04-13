@@ -1,192 +1,130 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+/* PETGAS CRM Theme - inspirado en https://petgas.com.do/petgasdo/ */
 
-/* PETGAS Brand Colors */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+
 :root {
-  --petgas-green-dark: #0b3d1a;
-  --petgas-green: #1db954;
-  --petgas-green-light: #7fff6a;
-  --petgas-neon: #baff39;
-  --petgas-white: #fff;
-  --petgas-black: #101010;
+  --petgas-green: #00b140;
+  --petgas-yellow: #ffe600;
+  --petgas-blue: #009fe3;
+  --petgas-dark: #222b2e;
+  --petgas-gray: #f5f7fa;
+  --petgas-glass: rgba(255,255,255,0.7);
+  --petgas-shadow: 0 8px 32px 0 rgba(0, 177, 64, 0.12);
+  --petgas-radius: 18px;
+  --petgas-font: 'Montserrat', Arial, sans-serif;
 }
 
 body {
-  font-family: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
-  background: var(--petgas-black);
-  min-height: 100vh;
+  background: var(--petgas-gray);
+  font-family: var(--petgas-font);
+  color: var(--petgas-dark);
   margin: 0;
-  color: var(--petgas-white);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--petgas-font);
+  font-weight: 900;
+  color: var(--petgas-green);
   letter-spacing: 0.01em;
-  transition: background 0.5s;
 }
 
-.header-bar {
-  background: linear-gradient(90deg, var(--petgas-green-dark) 0%, var(--petgas-green) 100%);
-  padding: 0.5em 2em;
+a {
+  color: var(--petgas-blue);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--petgas-green);
+}
+
+.petgas-navbar {
+  background: linear-gradient(90deg, var(--petgas-green) 60%, var(--petgas-blue) 100%);
+  color: #fff;
+  padding: 18px 32px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 0 0 var(--petgas-radius) var(--petgas-radius);
+  box-shadow: var(--petgas-shadow);
   display: flex;
   align-items: center;
-  gap: 1em;
-  border-bottom: 2px solid var(--petgas-green);
+  gap: 24px;
 }
 
-.logo-img {
-  width: 38px;
-  height: 38px;
+.petgas-card, .petgas-panel, .petgas-modal {
+  background: var(--petgas-glass);
+  border-radius: var(--petgas-radius);
+  box-shadow: var(--petgas-shadow);
+  padding: 28px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1.5px solid rgba(0,177,64,0.12);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.petgas-card:hover, .petgas-panel:hover {
+  box-shadow: 0 12px 40px 0 rgba(0, 177, 64, 0.18);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.petgas-btn {
+  background: linear-gradient(90deg, var(--petgas-green) 60%, var(--petgas-blue) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--petgas-radius);
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(0,177,64,0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.petgas-btn:hover {
+  background: linear-gradient(90deg, var(--petgas-blue) 40%, var(--petgas-green) 100%);
+  box-shadow: 0 6px 18px 0 rgba(0,177,64,0.18);
+  transform: scale(1.04);
+}
+
+.petgas-badge {
+  display: inline-block;
+  padding: 4px 14px;
   border-radius: 12px;
-  background: var(--petgas-white);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.header-title {
-  font-size: 1.3rem;
+  font-size: 0.95em;
   font-weight: 700;
-  color: var(--petgas-white);
-  letter-spacing: 0.04em;
-  margin-right: 1.5em;
+  margin-right: 8px;
+  background: var(--petgas-green);
+  color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0,177,64,0.10);
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  transition: background 0.2s;
+}
+.petgas-badge.yellow { background: var(--petgas-yellow); color: #222; }
+.petgas-badge.blue { background: var(--petgas-blue); color: #fff; }
+.petgas-badge.gray { background: #e5e7eb; color: #222; }
+
+.petgas-animate-fadein {
+  animation: petgas-fadein 0.7s cubic-bezier(.4,0,.2,1);
+}
+@keyframes petgas-fadein {
+  from { opacity: 0; transform: translateY(16px);}
+  to { opacity: 1; transform: none;}
 }
 
-.nav-btn {
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--petgas-white);
-  background: transparent;
-  border: 1.5px solid var(--petgas-white);
-  border-radius: 18px;
-  padding: 0.3em 1.1em;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
-  cursor: pointer;
-  transition: 
-    background 0.2s, 
-    color 0.2s, 
-    border 0.2s, 
-    box-shadow 0.2s;
-  outline: none;
+.petgas-animate-pop {
+  animation: petgas-pop 0.3s cubic-bezier(.4,0,.2,1);
 }
-.nav-btn:hover, .nav-btn:focus, .nav-btn.active {
-  background: var(--petgas-green-light);
-  color: var(--petgas-green-dark);
-  border: 1.5px solid var(--petgas-neon);
-  box-shadow: 0 0 8px 2px var(--petgas-neon);
-}
-
-.info-bar {
-  background: linear-gradient(90deg, var(--petgas-neon) 0%, var(--petgas-green-light) 100%);
-  color: var(--petgas-green-dark);
-  font-size: 1.05rem;
-  font-weight: 600;
-  padding: 0.5em 2em;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 18px;
-  box-shadow: 0 2px 12px 0 rgba(186,255,57,0.12);
-  margin-bottom: 1.5em;
-  display: flex;
-  align-items: center;
-  gap: 0.7em;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 0.6em 1em;
-  border-radius: 14px;
-  border: 1.5px solid var(--petgas-green-light);
-  background: rgba(255,255,255,0.15);
-  font-size: 1rem;
-  font-family: inherit;
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  outline: none;
-  color: var(--petgas-white);
-  box-shadow: 0 2px 8px var(--petgas-green-light);
-  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
-}
-.auth-input:focus {
-  border: 1.5px solid var(--petgas-neon);
-  background: rgba(255,255,255,0.25);
-  box-shadow: 0 4px 16px var(--petgas-green);
-  color: var(--petgas-green-dark);
-}
-
-.auth-button {
-  padding: 0.7em 1.5em;
-  border-radius: 16px;
-  border: 1.5px solid var(--petgas-neon);
-  font-weight: 700;
-  font-size: 1.1rem;
-  background: transparent;
-  color: var(--petgas-neon);
-  box-shadow: 0 2px 8px var(--petgas-green-light);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
-  margin-top: 0.5em;
-}
-.auth-button:hover, .auth-button:focus {
-  background: var(--petgas-neon);
-  color: var(--petgas-green-dark);
-  box-shadow: 0 4px 16px var(--petgas-green);
-  transform: translateY(-2px) scale(1.03);
-}
-
-form, .glass-card {
-  background: rgba(255,255,255,1);
-  border-radius: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  border: 1.5px solid var(--petgas-green);
-  color: var(--petgas-black);
-}
-
-.grid > div {
-  background: rgba(255,255,255,0.3);
-  border-radius: 16px;
-  border: 1.5px solid rgba(255,255,255,0.2);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  color: #333;
-}
-
-.grid > div .text-xl {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #222;
-}
-
-.grid > div div {
-  font-size: 0.9rem;
-  color: #444;
+@keyframes petgas-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  80% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
 }
 
 ::-webkit-scrollbar {
   width: 8px;
-  background: var(--petgas-green-dark);
+  background: #e5e7eb;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--petgas-green-light);
+  background: var(--petgas-green);
   border-radius: 8px;
-}
-
-.glowing-logo {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: transparent;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  animation: blink 2s linear infinite, glow 2s linear infinite;
-}
-
-@keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0.2; }
-}
-
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 12px 4px var(--petgas-neon); }
-  50% { box-shadow: none; }
-}
-
-.card-3d {
-  transition: transform 0.3s ease-in-out;
-}
-
-.card-3d:hover {
-  transform: perspective(200px) rotateX(5deg) rotateY(5deg);
 }

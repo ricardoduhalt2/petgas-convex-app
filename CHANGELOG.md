@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.9.0] - 2025-12-04
+### Added
+- Integración y despliegue exitoso del widget `WhatsAppLeadDialog` como chatbot embebible, funcional en producción y desarrollo local.
+- Configuración multi-page en Vite para servir whatsapp-lead-dialog.html como entrypoint independiente.
+- Documentación y solución de problemas de variables de entorno para Convex y Vite.
+- Instrucciones para pruebas locales y deploy del widget.
+- Preparación para rediseño moderno y encapsulado del look and feel de todo el sistema.
+
+### Changed
+- Eliminada confusión entre archivos HTML de producción y desarrollo para el widget.
+- Mejorada la experiencia de desarrollo local para pruebas del chatbot.
+
+### Fixed
+- Problemas de carga de assets y rutas en desarrollo y producción para el widget WhatsAppLeadDialog.
+- Error de "No address provided to ConvexReactClient" solucionado agregando VITE_CONVEX_URL a .env.local.
+
+### Pendiente
+- Rediseño moderno (glassmorphism, tech, encapsulado) del widget y la UI general.
+- Mejorar aún más la documentación para onboarding de nuevos agentes y desarrolladores.
+
 ## [1.8.0] - 2025-11-04
 ### Added
 - Componente `WhatsAppLeadDialog.tsx`: diálogo tipo chatbot que capta información del usuario antes de abrir WhatsApp y la envía a Convex como lead con source `whatsapp_web`.
