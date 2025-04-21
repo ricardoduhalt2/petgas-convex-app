@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0] - 2025-04-13
+### Added
+- Limpieza avanzada de textos de email en el flujo de importación (eliminando cabeceras MIME, base64, entidades HTML corruptas y binarios, conservando solo texto legible).
+- Unificación de los botones de importación en el dashboard: ahora un solo botón ejecuta ambos procesos (Email y MySQL) en secuencia.
+- Mejor experiencia de deduplicación y trazabilidad en la importación de leads.
+- Documentación, checklist y logs actualizados para reflejar los cambios recientes.
+
 ## [1.9.0] - 2025-12-04
 ### Added
 - Integración y despliegue exitoso del widget `WhatsAppLeadDialog` como chatbot embebible, funcional en producción y desarrollo local.

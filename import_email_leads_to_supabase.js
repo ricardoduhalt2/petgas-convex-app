@@ -3,25 +3,14 @@
 
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
+import { cleanText } from './clean_email_lead_text.js';
+import { classifyLead } from './gemini_classifier.js';
 
 const supabaseUrl = 'https://eqngpaogpxagisbpmhrp.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxbmdwYW9ncHhhZ2lzYnBtaHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg0MzMzOTUsImV4cCI6MjA1NDAwOTM5NX0.iVUpDPcMagHQUTkNxLOsDAfkb4QETuQJbEX6xW8TmpQ';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-function cleanText(html) {
-  if (!html) return "";
-  let text = html.replace(/<img[^>]*>/gi, " ");
-  text = text.replace(/<[^>]+>/g, " ");
-  text = text.replace(/&nbsp;/gi, " ")
-             .replace(/&/gi, "&")
-             .replace(/</gi, "<")
-             .replace(/>/gi, ">")
-             .replace(/"/gi, '"')
-             .replace(/&#39;/gi, "'");
-  text = text.replace(/[^\x20-\x7EáéíóúÁÉÍÓÚñÑüÜ¡¿]/g, " ");
-  text = text.replace(/\s+/g, " ").trim();
-  return text;
-}
+// Usar cleanText de clean_email_lead_text.js para limpieza profunda
 
 async function main() {
   const leads = JSON.parse(fs.readFileSync('email_leads_export.json', 'utf8'));
@@ -30,6 +19,16 @@ async function main() {
   for (const lead of leads) {
     const cleanedBody = cleanText(lead.body || "");
     const email = extractEmail(lead.from);
+    // Clasificación AI (Gemini)
+    let category_ai = null;
+    try {
+      category_ai = await classifyLead(
+        [lead.subject, cleanedBody].filter(Boolean).join('\n')
+      );
+    } catch (e) {
+      console.error('Error clasificando con Gemini:', e.message);
+      category_ai = "Sin clasificar";
+    }
     // Verificar si ya existe un lead con este email
     const { data: existing, error: findError } = await supabase
       .from('petgas_leads')
@@ -62,11 +61,14 @@ async function main() {
       const newMsg = {
         body: cleanedBody,
         subject: lead.subject || '',
-        date: new Date().toISOString(),
+        date_origin: lead.date || null,
+        date_import: new Date().toISOString(),
+        category_ai,
         ...lead.metadata
       };
       const updatedMeta = {
         ...prevMeta,
+        category_ai,
         messages: [...prevMessages, newMsg]
       };
 
@@ -96,11 +98,14 @@ async function main() {
         metadata: {
           body: cleanedBody,
           subject: lead.subject || '',
+          category_ai,
           messages: [
             {
               body: cleanedBody,
               subject: lead.subject || '',
-              date: new Date().toISOString(),
+              date_origin: lead.date || null,
+              date_import: new Date().toISOString(),
+              category_ai,
               ...lead.metadata
             }
           ],

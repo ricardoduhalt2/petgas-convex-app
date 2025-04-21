@@ -126,11 +126,6 @@ export function LeadsDashboard() {
         <p style={{ fontSize: 18, color: "#222b2e", marginBottom: 32 }}>
           Este dashboard muestra los leads captados desde distintas fuentes y categorizados en diferentes embudos.
         </p>
-        {/* Cards de categorías inteligentes */}
-        <CategoryCards
-          leads={leads}
-          onCategoryClick={setFilterCategory}
-        />
       </div>
       <div style={{ display: "flex", gap: 24, marginBottom: 18, alignItems: "center", maxWidth: 1000, marginLeft: "auto", marginRight: "auto" }}>
         <input
@@ -161,10 +156,10 @@ export function LeadsDashboard() {
             minWidth: 160
           }}
         >
-          <option value="">Todas las categorías AI</option>
-          <option value="Inversor">Inversor</option>
-          <option value="Empresa">Empresa</option>
-          <option value="Ciudadano">Ciudadano</option>
+          <option value="">Todas las categorías</option>
+          <option value="ciudadano">Ciudadano</option>
+          <option value="empresa">Empresa</option>
+          <option value="inversor">Inversor</option>
           <option value="CRYPTO">CRYPTO</option>
         </select>
         <select
@@ -270,105 +265,6 @@ export function LeadsDashboard() {
           onAgentChange={handleAgentChange}
         />
       )}
-    </div>
-  );
-}
-
-/** Cards visuales para categorías de leads */
-function CategoryCards({ leads, onCategoryClick }: { leads: any[], onCategoryClick: (category: string) => void }) {
-  const categories = [
-    {
-      key: "Inversor",
-      label: "Inversor",
-      color: "#00b140",
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="16" fill="#eafff2"/>
-          <path d="M16 18c3.31 0 6 2.24 6 5v1H10v-1c0-2.76 2.69-5 6-5Zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="#00b140"/>
-        </svg>
-      )
-    },
-    {
-      key: "Empresa",
-      label: "Empresa",
-      color: "#009fe3",
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="16" fill="#eaf7ff"/>
-          <rect x="10" y="12" width="12" height="8" rx="2" fill="#009fe3"/>
-          <rect x="13" y="16" width="2" height="4" fill="#fff"/>
-          <rect x="17" y="16" width="2" height="4" fill="#fff"/>
-        </svg>
-      )
-    },
-    {
-      key: "Ciudadano",
-      label: "Ciudadano",
-      color: "#7f7fff",
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="16" fill="#f0f0ff"/>
-          <path d="M16 10v8m0 0l-4-4m4 4l4-4" stroke="#7f7fff" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-      )
-    },
-    {
-      key: "CRYPTO",
-      label: "CRYPTO",
-      color: "#ffe600",
-      icon: (
-        <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
-          <circle cx="16" cy="16" r="16" fill="#fffbe6"/>
-          <path d="M16 10v12m-4-6h8" stroke="#ffe600" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-      )
-    }
-  ];
-
-  return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-      gap: 24,
-      marginBottom: 32
-    }}>
-      {categories.map(cat => {
-        const count = leads.filter(lead => lead.metadata?.category_ai === cat.key).length;
-        return (
-          <div key={cat.key}
-            onClick={() => onCategoryClick(cat.key)}
-            style={{
-              background: "#fff",
-              borderRadius: 18,
-              boxShadow: `0 2px 12px 0 ${cat.color}22`,
-              border: `2px solid ${cat.color}33`,
-              padding: "24px 18px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              minHeight: 140,
-              transition: "box-shadow 0.2s",
-              cursor: "pointer"
-            }}
-          >
-            <div style={{ marginBottom: 12 }}>{cat.icon}</div>
-            <div style={{
-              fontWeight: 900,
-              fontSize: 22,
-              color: cat.color,
-              marginBottom: 6,
-              letterSpacing: "0.02em"
-            }}>{cat.label}</div>
-            <div style={{
-              color: "#888",
-              fontSize: 15,
-              textAlign: "center"
-            }}>
-              {count} leads
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export function LeadsDashboard() {
     async function fetchLeads() {
       const { data, error } = await supabase
         .from("petgas_leads")
-        .select("*")
+        .select("*, metadata")
         .order("created_at", { ascending: false })
         .range((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
       const hasNextPage = (data?.length || 0) > PAGE_SIZE;
@@ -126,12 +126,15 @@ export function LeadsDashboard() {
         <p style={{ fontSize: 18, color: "#222b2e", marginBottom: 32 }}>
           Este dashboard muestra los leads captados desde distintas fuentes y categorizados en diferentes embudos.
         </p>
-        {/* Cards de categorías inteligentes */}
+        {/* Cards de categorías */}
         <CategoryCards
           leads={leads}
           onCategoryClick={setFilterCategory}
         />
+        {/* Botones de importación */}
+        <ImportButtons />
       </div>
+      {/* Filtros y búsqueda */}
       <div style={{ display: "flex", gap: 24, marginBottom: 18, alignItems: "center", maxWidth: 1000, marginLeft: "auto", marginRight: "auto" }}>
         <input
           type="text"
@@ -162,10 +165,9 @@ export function LeadsDashboard() {
           }}
         >
           <option value="">Todas las categorías AI</option>
-          <option value="Inversor">Inversor</option>
-          <option value="Empresa">Empresa</option>
-          <option value="Ciudadano">Ciudadano</option>
-          <option value="CRYPTO">CRYPTO</option>
+          {["Inversor", "Empresa", "Ciudadano", "Desea vender plástico", "Solo información", "Voluntario", "Spam", "Sin clasificar"].map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
         </select>
         <select
           value={filterSource}
@@ -185,18 +187,18 @@ export function LeadsDashboard() {
           <option value="whatsapp">WhatsApp</option>
           <option value="manual">Manual</option>
           <option value="wp_comment">WP Comment</option>
-          <option value="CRYPTO">CRYPTO</option>
         </select>
       </div>
       <div className="petgas-panel petgas-animate-fadein" style={{ marginTop: 0 }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr>
-              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "22%", textAlign: "left", padding: "18px 24px" }}>Nombre</th>
-              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "28%", textAlign: "left", padding: "18px 24px" }}>Email</th>
-              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "18%", textAlign: "left", padding: "18px 24px" }}>Origen</th>
-              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "18%", textAlign: "left", padding: "18px 24px" }}>Categoría</th>
-              <th className="petgas-badge gray" style={{ fontWeight: 700, color: "#222", width: "14%", textAlign: "left", padding: "18px 24px" }}>Fecha</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "20%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Nombre</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "25%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Email</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "15%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Origen</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "15%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Categoría AI</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "25%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Mensaje</th>
+              <th style={{ fontWeight: 700, color: "#222", width: "10%", textAlign: "left", padding: "18px 24px", background: "#f5f7fa", borderBottom: "2px solid #e0eaff" }}>Fecha</th>
             </tr>
           </thead>
           <tbody>
@@ -207,10 +209,10 @@ export function LeadsDashboard() {
                 const name = lead.name
                   ? lead.name.replace(/["<>]/g, "").replace(email, "").replace(/ *$/, "")
                   : "";
-                const searchText = (name + " " + email + " " + lead.source + " " + lead.category).toLowerCase();
+                const searchText = (name + " " + email + " " + lead.source + " " + (lead.metadata?.category_ai || "") + " " + (lead.metadata?.interest || "") + " " + (lead.metadata?.body || "")).toLowerCase();
                 return (
-                  (!search || searchText.includes(search.toLowerCase())) &&
-                  (!filterCategory || (lead.category || "").toLowerCase() === filterCategory.toLowerCase()) &&
+                  (!search || searchText.includes(searchText.toLowerCase())) &&
+                  (!filterCategory || (lead.metadata?.category_ai || "").toLowerCase() === filterCategory.toLowerCase()) &&
                   (!filterSource || (lead.source || "").toLowerCase() === filterSource.toLowerCase())
                 );
               })
@@ -248,7 +250,8 @@ export function LeadsDashboard() {
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{name}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{email}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.source}</td>
-                    <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.category}</td>
+                    <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.metadata?.category_ai || "-"}</td>
+                    <td style={{ padding: "18px 24px", color: "inherit" }}>{cleanText(lead.metadata?.body || "-")}</td>
                     <td style={{ padding: "18px 24px", color: "inherit" }}>{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : "-"}</td>
                   </tr>
                 );
@@ -274,6 +277,99 @@ export function LeadsDashboard() {
   );
 }
 
+/** Botones para importar leads de email, MySQL y WhatsApp */
+function ImportButtons() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<string | null>(null);
+
+  // Un solo botón que importa ambos tipos de leads en secuencia
+  async function handleImportAll() {
+    setLoading(true);
+    setResult(null);
+    let output = "";
+    try {
+      // Importar emails
+      const resEmail = await fetch("http://localhost:4000/import-email-leads", { method: "POST" });
+      const dataEmail = await resEmail.json();
+      if (dataEmail.success) {
+        output += `Importación de emails completada:\n${dataEmail.output || ""}\n\n`;
+      } else {
+        output += `Error al importar emails:\n${dataEmail.error || dataEmail.stderr || ""}\n\n`;
+      }
+      // Importar WordPress/MySQL
+      const resWP = await fetch("http://localhost:4000/import-wp-leads", { method: "POST" });
+      const dataWP = await resWP.json();
+      if (dataWP.success) {
+        output += `Importación de MySQL completada:\n${dataWP.output || ""}`;
+      } else {
+        output += `Error al importar MySQL:\n${dataWP.error || dataWP.stderr || ""}`;
+      }
+    } catch (err: any) {
+      output += "Error de red: " + err.message;
+    }
+    setResult(output);
+    setLoading(false);
+  }
+
+  // Icono combinado
+  const iconAll = (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ marginRight: 8, verticalAlign: "middle" }}>
+      <rect width="20" height="20" rx="5" fill="#00b140" />
+      <ellipse cx="10" cy="6" rx="6" ry="2.5" fill="#fff"/>
+      <ellipse cx="10" cy="6" rx="6" ry="2.5" stroke="#009fe3" strokeWidth="1.2"/>
+      <rect x="4" y="6" width="12" height="6" rx="2.5" fill="#fff"/>
+      <rect x="4" y="6" width="12" height="6" rx="2.5" stroke="#009fe3" strokeWidth="1.2"/>
+      <ellipse cx="10" cy="15" rx="6" ry="2.5" fill="#fff"/>
+      <ellipse cx="10" cy="15" rx="6" ry="2.5" stroke="#009fe3" strokeWidth="1.2"/>
+      <path d="M5 10l5 3 5-3" stroke="#00b140" strokeWidth="1.2" fill="none"/>
+      <path d="M5 10V6l5 3 5-3v4" stroke="#009fe3" strokeWidth="1.2" fill="none"/>
+    </svg>
+  );
+
+  return (
+    <div style={{ marginBottom: 18, display: "flex", gap: 10 }}>
+      <button
+        onClick={handleImportAll}
+        disabled={loading}
+        style={{
+          padding: "8px 18px",
+          borderRadius: 12,
+          background: "#00b140",
+          color: "#fff",
+          fontWeight: 800,
+          fontSize: 16,
+          border: "2px solid #009fe3",
+          boxShadow: "0 1px 4px 0 rgba(0,177,64,0.08)",
+          cursor: loading ? "not-allowed" : "pointer",
+          opacity: loading ? 0.7 : 1,
+          display: "flex",
+          alignItems: "center",
+        }}
+        title="Importar leads de Email y MySQL"
+      >
+        {iconAll}
+        {loading ? "Importando..." : "Importar Leads"}
+      </button>
+      {result && (
+        <pre
+          style={{
+            background: "#f5f7fa",
+            color: "#222b2e",
+            borderRadius: 10,
+            padding: 10,
+            marginLeft: 10,
+            maxWidth: 400,
+            whiteSpace: "pre-wrap",
+            fontSize: 13,
+          }}
+        >
+          {result}
+        </pre>
+      )}
+    </div>
+  );
+}
+
 /** Cards visuales para categorías de leads */
 function CategoryCards({ leads, onCategoryClick }: { leads: any[], onCategoryClick: (category: string) => void }) {
   const categories = [
@@ -289,7 +385,7 @@ function CategoryCards({ leads, onCategoryClick }: { leads: any[], onCategoryCli
       )
     },
     {
-      key: "Empresa",
+      key: "empresa",
       label: "Empresa",
       color: "#009fe3",
       icon: (
@@ -302,8 +398,8 @@ function CategoryCards({ leads, onCategoryClick }: { leads: any[], onCategoryCli
       )
     },
     {
-      key: "Ciudadano",
-      label: "Ciudadano",
+      key: "inversor",
+      label: "Inversor",
       color: "#7f7fff",
       icon: (
         <svg width="32" height="32" fill="none" viewBox="0 0 32 32">
@@ -371,6 +467,26 @@ function CategoryCards({ leads, onCategoryClick }: { leads: any[], onCategoryCli
       })}
     </div>
   );
+}
+
+/** Limpia texto plano: elimina HTML, entidades y caracteres extraños */
+function cleanText(input: string): string {
+  if (!input) return "";
+  // Elimina etiquetas HTML
+  let text = input.replace(/<img[^>]*>/gi, " ");
+  text = text.replace(/<[^>]+>/g, " ");
+  // Decodifica entidades HTML básicas
+  text = text.replace(/&nbsp;/gi, " ")
+             .replace(/&/gi, "&")
+             .replace(/</gi, "<")
+             .replace(/>/gi, ">")
+             .replace(/"/gi, '"')
+             .replace(/&#39;/gi, "'");
+  // Elimina caracteres no imprimibles o binarios
+  text = text.replace(/[^\x20-\x7EáéíóúÁÉÍÓÚñÑüÜ¡¿]/g, " ");
+  // Normaliza espacios
+  text = text.replace(/\s+/g, " ").trim();
+  return text;
 }
 
 // Utilidad para extraer email de un string tipo 'Nombre <email@dominio.com>'
